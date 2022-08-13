@@ -6,6 +6,8 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.vk.competition.minbenchmark.entity.TableMeta;
 import ru.vk.competition.minbenchmark.models.ColumnInfo;
 
@@ -17,10 +19,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class TableManagerRepository {
+    private final TablesMetaRepository tablesMetaRepository;
     private final JdbcTemplate jdbcTemplate;
     private final ObjectMapper objectMapper;
 
     @SneakyThrows
+    @Transactional(propagation = Propagation.REQUIRED)
     public boolean createTable(TableMeta tableMeta) {
         String query = "create table " + tableMeta.getTableName() + " (";
         List<ColumnInfo> columns = List.of(objectMapper.readValue(tableMeta.getColumnInfos(), ColumnInfo[].class));
@@ -37,6 +41,7 @@ public class TableManagerRepository {
         try {
             log.info("Executing query: {}", query);
             jdbcTemplate.execute(query);
+            tablesMetaRepository.save(tableMeta);
             return true;
         } catch (Exception e) {
             log.error("Create table error", e, e);

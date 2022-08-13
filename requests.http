@@ -32,3 +32,6 @@ Content-Type: application/json
     }
   ]
 }
+
+### Get table by name
+GET http://localhost:9081/api/table/get-table-by-name/testTable1
