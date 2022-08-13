@@ -1,0 +1,10 @@
+GET http://localhost:9081/api/single-query/get-all-single-queries
+
+###
+POST http://localhost:9081/api/single-query/add-new-query
+Content-Type: application/json
+
+{
+  "queryId": 1,
+  "query": "select * from aaa;"
+}
