@@ -8,3 +8,27 @@ Content-Type: application/json
   "queryId": 1,
   "query": "select * from aaa;"
 }
+
+### Create table
+POST http://localhost:9081/api/table/create-table
+Content-Type: application/json
+
+{
+  "tableName": "testTable",
+  "columnsAmount": 3,
+  "primaryKeyAmount": "id",
+  "columnInfos": [
+    {
+      "title": "id",
+      "type": "int"
+    },
+    {
+      "title": "name",
+      "type": "varchar(255)"
+    },
+    {
+      "title" : "surname",
+      "type": "varchar(255)"
+    }
+  ]
+}

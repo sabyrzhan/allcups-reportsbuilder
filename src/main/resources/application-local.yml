@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:h2:file:/Users/sabyrzhan/sample_solution/h2db.db;AUTO_SERVER=TRUE
+    username: sa
+    password: password
