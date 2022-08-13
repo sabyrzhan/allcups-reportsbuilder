@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import ru.vk.competition.minbenchmark.controller.request.TableMetaRequest;
@@ -52,6 +51,18 @@ public class TableManagerController {
                             return new ResponseEntity<Object>("", HttpStatus.OK);
                         }
                     }).orElse(new ResponseEntity<>("", HttpStatus.OK));
+        }).publishOn(Schedulers.boundedElastic());
+    }
+
+    @DeleteMapping("/delete-table-by-name/{name}")
+    public Mono<ResponseEntity<Void>> deleteTableByName(@PathVariable String name) {
+        return Mono.fromCallable(() -> {
+            boolean result = tableManagerRepository.dropTable(name);
+            if (!result) {
+                return new ResponseEntity<Void>(HttpStatus.NOT_ACCEPTABLE);
+            } else {
+                return new ResponseEntity<Void>(HttpStatus.CREATED);
+            }
         }).publishOn(Schedulers.boundedElastic());
     }
 

@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface TablesMetaRepository extends CrudRepository<TableMeta, Integer> {
     Optional<TableMeta> findByTableName(String tableName);
+    void deleteByTableName(String tableName);
 }

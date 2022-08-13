@@ -18,13 +18,13 @@ import java.util.stream.Collectors;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(propagation = Propagation.REQUIRED)
 public class TableManagerRepository {
     private final TablesMetaRepository tablesMetaRepository;
     private final JdbcTemplate jdbcTemplate;
     private final ObjectMapper objectMapper;
 
     @SneakyThrows
-    @Transactional(propagation = Propagation.REQUIRED)
     public boolean createTable(TableMeta tableMeta) {
         String query = "create table " + tableMeta.getTableName() + " (";
         List<ColumnInfo> columns = List.of(objectMapper.readValue(tableMeta.getColumnInfos(), ColumnInfo[].class));
@@ -47,5 +47,19 @@ public class TableManagerRepository {
             log.error("Create table error", e, e);
             return false;
         }
+    }
+
+    public boolean dropTable(String tableName) {
+        return tablesMetaRepository.findByTableName(tableName).map(tableMeta -> {
+            String query = "drop table " + tableName;
+            try {
+                jdbcTemplate.execute(query);
+                tablesMetaRepository.deleteByTableName(tableName);
+                return true;
+            } catch (Exception e) {
+                log.error("Drop table error", e, e);
+                return false;
+            }
+        }).orElse(false);
     }
 }

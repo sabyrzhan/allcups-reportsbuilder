@@ -35,3 +35,6 @@ Content-Type: application/json
 
 ### Get table by name
 GET http://localhost:9081/api/table/get-table-by-name/testTable1
+
+### Delete table by name
+DELETE http://localhost:9081/api/table/delete-table-by-name/testTable
